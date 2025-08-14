@@ -249,3 +249,30 @@ This project is licensed under the MIT License.
 
 **Enjoy your IELTS Academic Reading Platform!**  
 Feel free to contribute, customize, and share feedback.
+<img width="1440" height="900" alt="Screenshot 2025-08-14 at 19 51 46" src="https://github.com/user-attachments/assets/38fc8a7d-11e7-49cd-b754-b4937a416ea3" />
+
+
+<img width="1440" height="900" alt="Screenshot 2025-08-14 at 19 52 02" src="https://github.com/user-attachments/assets/47af6871-9bc2-4c37-bb61-049822801b81" />
+
+
+<img width="1440" height="900" alt="Screenshot 2025-08-14 at 19 52 08" src="https://github.com/user-attachments/assets/ecee8daf-d97f-442f-924a-cd756bdc1e1d" />
+
+
+
+<img width="1440" height="900" alt="Screenshot 2025-08-14 at 19 52 20" src="https://github.com/user-attachments/assets/8033cd66-33bc-4730-af31-e94664e5b7f3" />
+
+
+<img width="1440" height="900" alt="Screenshot 2025-08-14 at 19 52 42" src="https://github.com/user-attachments/assets/cafb2552-bb52-4226-9f1a-a661e4748075" />
+
+
+
+<img width="1440" height="900" alt="Screenshot 2025-08-14 at 19 56 15" src="https://github.com/user-attachments/assets/a9471caf-9b74-4a6b-a2af-bc6e088733cc" />
+
+
+<img width="1440" height="900" alt="Screenshot 2025-08-14 at 19 56 16" src="https://github.com/user-attachments/assets/5f4538ce-c822-4206-952d-b45393810287" />
+
+
+<img width="1440" height="900" alt="Screenshot 2025-08-14 at 19 56 20" src="https://github.com/user-attachments/assets/79c92f76-8760-4f8a-879f-4aeee41c6be6" />
+
+
+<img width="1440" height="900" alt="Screenshot 2025-08-14 at 19 56 24" src="https://github.com/user-attachments/assets/271073bf-2ba5-4836-9eab-c1e7c85e2b1b" />
