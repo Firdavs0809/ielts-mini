@@ -1,0 +1,75 @@
+{
+  "title": "IELTS Academic Practice Test - Complete",
+  "description": "Full IELTS Academic practice test with all 4 modules",
+  "total_duration": 180,
+  "is_active": true,
+  "sections": [
+    {
+      "section_type": "LISTENING",
+      "title": "Listening Section",
+      "description": "IELTS Academic Listening Test - 4 parts, 40 questions, 30 minutes",
+      "duration": 30,
+      "order": 1,
+      "is_active": true,
+      "passages": []
+    },
+    {
+      "section_type": "READING",
+      "title": "Reading Section",
+      "description": "IELTS Academic Reading Test - 3 passages, 40 questions, 60 minutes",
+      "duration": 60,
+      "order": 2,
+      "is_active": true,
+      "passages": [
+        {
+          "title": "The History of Coffee",
+          "content": "Coffee is one of the world's most popular beverages, with a rich history that spans centuries and continents. The origins of coffee can be traced back to the ancient coffee forests of Ethiopia, where legend has it that a goat herder named Kaldi discovered the energizing effects of coffee beans around 850 AD.\n\nAccording to the legend, Kaldi noticed that his goats became unusually energetic after eating berries from a certain tree. Curious, he tried the berries himself and experienced a similar boost in energy. He shared his discovery with local monks, who began using the berries to stay awake during long hours of prayer.\n\nFrom Ethiopia, coffee cultivation spread to the Arabian Peninsula, particularly Yemen, where it was first cultivated on a large scale. By the 15th century, coffee was being grown in the Yemeni district of Arabia and by the 16th century, it had reached Persia, Egypt, Syria, and Turkey.",
+          "passage_number": 1,
+          "questions": [
+            {
+              "question_number": 1,
+              "question_type": "TRUE_FALSE",
+              "question_text": "Kaldi discovered coffee beans in the 9th century.",
+              "correct_answer": "TRUE",
+              "marks": 1,
+              "explanation": "The text states that Kaldi discovered coffee around 850 AD, which is the 9th century."
+            },
+            {
+              "question_number": 2,
+              "question_type": "MCQ",
+              "question_text": "Which country is the world's largest coffee producer?",
+              "correct_answer": "Brazil",
+              "marks": 1,
+              "options": [
+                {"label": "A", "text": "Vietnam", "is_correct": false},
+                {"label": "B", "text": "Brazil", "is_correct": true},
+                {"label": "C", "text": "Colombia", "is_correct": false},
+                {"label": "D", "text": "Indonesia", "is_correct": false}
+              ],
+              "explanation": "The text states that Brazil is the world's largest coffee producer."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_type": "WRITING",
+      "title": "Writing Section",
+      "description": "IELTS Academic Writing Test - Task 1 and Task 2, 60 minutes",
+      "duration": 60,
+      "order": 3,
+      "is_active": true,
+      "passages": []
+    },
+    {
+      "section_type": "SPEAKING",
+      "title": "Speaking Section",
+      "description": "IELTS Speaking Test - 3 parts, 11-14 minutes",
+      "duration": 14,
+      "order": 4,
+      "is_active": true,
+      "passages": []
+    }
+  ]
+}
+
