@@ -46,13 +46,15 @@ export default function TestPage() {
           setTestId(res.data.session_id);
           localStorage.setItem("reading_session_id", res.data.session_id); // <-- Store in localStorage
         } else {
-          alert("Failed to start test. Try again.");
+          alert(`Failed to start test. Response: ${JSON.stringify(res.data)}`);
         }
         setConfirmOpen(false);
       })
       .catch((err) => {
         setConfirmOpen(false);
-        alert("Failed to start test. Try again.");
+        const errorMsg = err.response?.data?.error || err.message || "Failed to start test. Try again.";
+        alert(`Failed to start test: ${errorMsg}`);
+        console.error("Start test error:", err);
       });
   };
 

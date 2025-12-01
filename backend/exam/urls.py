@@ -21,4 +21,10 @@ urlpatterns = [
     # Admin endpoints
     path('admin/upload-passage', views.admin_upload_passage, name='admin_upload_passage'),
     path('admin/create-question', views.admin_create_question, name='admin_create_question'),
+    
+    # Legacy endpoints for frontend compatibility
+    path('start-reading-test/', views.start_reading_test_legacy, name='start_reading_test_legacy'),
+    path('reading-test/', views.reading_test_legacy, name='reading_test_legacy'),
+    path('submit-reading/', views.submit_reading_legacy, name='submit_reading_legacy'),
+    path('end-session/', views.end_session_legacy, name='end_session_legacy'),
 ]

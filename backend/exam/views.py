@@ -380,3 +380,244 @@ def submit_speaking_task(request):
         return JsonResponse({'error': 'Session not found'}, status=404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+# Legacy endpoints for frontend compatibility
+@csrf_exempt
+@require_http_methods(["POST"])
+def start_reading_test_legacy(request):
+    """
+    POST /api/start-reading-test/
+    Legacy endpoint: Start a reading test session
+    Returns session_id for compatibility with old frontend
+    """
+    try:
+        # Get or create a default exam with reading section
+        exam = Exam.objects.filter(is_active=True).first()
+        
+        if not exam:
+            # Create a default exam if none exists
+            exam = Exam.objects.create(
+                title="IELTS Academic Reading Test",
+                description="Default reading test",
+                total_duration=60,
+                is_active=True
+            )
+            
+            # Create reading section
+            reading_section = Section.objects.create(
+                exam=exam,
+                section_type='READING',
+                title='Reading Section',
+                duration=60,
+                order=1,
+                is_active=True
+            )
+        else:
+            # Get reading section
+            reading_section = exam.sections.filter(section_type='READING', is_active=True).first()
+            if not reading_section:
+                reading_section = Section.objects.create(
+                    exam=exam,
+                    section_type='READING',
+                    title='Reading Section',
+                    duration=60,
+                    order=1,
+                    is_active=True
+                )
+        
+        # Create test session
+        test_session = TestSession.objects.create(
+            exam=exam,
+            status='IN_PROGRESS',
+            time_remaining=exam.total_duration * 60
+        )
+        
+        return JsonResponse({
+            'session_id': str(test_session.session_id)
+        }, status=201)
+    
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def reading_test_legacy(request):
+    """
+    GET /api/reading-test/
+    Legacy endpoint: Get reading passage and questions
+    """
+    try:
+        # Get the most recent active session or create one
+        test_session = TestSession.objects.filter(status='IN_PROGRESS').order_by('-started_at').first()
+        
+        if not test_session:
+            # If no session, create one
+            exam = Exam.objects.filter(is_active=True).first()
+            if not exam:
+                return JsonResponse({'error': 'No exam found'}, status=404)
+            
+            test_session = TestSession.objects.create(
+                exam=exam,
+                status='IN_PROGRESS',
+                time_remaining=exam.total_duration * 60
+            )
+        
+        # Get reading section
+        reading_section = test_session.exam.sections.filter(section_type='READING', is_active=True).first()
+        if not reading_section:
+            return JsonResponse({'error': 'Reading section not found'}, status=404)
+        
+        # Get first passage
+        passage = reading_section.passages.first()
+        if not passage:
+            return JsonResponse({
+                'content': 'No passage available',
+                'passage': 'No passage available',
+                'questions': [],
+                'test_id': str(test_session.session_id)
+            })
+        
+        # Get questions
+        questions = reading_section.questions.all().order_by('question_number')
+        questions_data = []
+        
+        for q in questions:
+            question_data = {
+                'id': str(q.id),
+                'question_type': q.question_type,
+                'question_text': q.question_text,
+                'question_number': q.question_number,
+                'correct_answer': q.correct_answer,
+            }
+            
+            # Add options for MCQ
+            if q.question_type == 'MCQ':
+                options = q.options.all().order_by('order')
+                for opt in options:
+                    if opt.option_label == 'A':
+                        question_data['option_a'] = opt.option_text
+                    elif opt.option_label == 'B':
+                        question_data['option_b'] = opt.option_text
+                    elif opt.option_label == 'C':
+                        question_data['option_c'] = opt.option_text
+                    elif opt.option_label == 'D':
+                        question_data['option_d'] = opt.option_text
+            
+            questions_data.append(question_data)
+        
+        return JsonResponse({
+            'content': passage.content,
+            'passage': passage.content,
+            'questions': questions_data,
+            'test_id': str(test_session.session_id)
+        })
+    
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def submit_reading_legacy(request):
+    """
+    POST /api/submit-reading/
+    Legacy endpoint: Submit reading answers
+    Body: {
+        "session_id": "uuid",
+        "answers": {"question_id": "answer", ...}
+    }
+    """
+    try:
+        data = json.loads(request.body)
+        session_id = data.get('session_id')
+        answers = data.get('answers', {})
+        
+        if not session_id:
+            return JsonResponse({'error': 'session_id is required'}, status=400)
+        
+        test_session = TestSession.objects.get(session_id=session_id)
+        reading_section = test_session.exam.sections.filter(section_type='READING', is_active=True).first()
+        
+        if not reading_section:
+            return JsonResponse({'error': 'Reading section not found'}, status=404)
+        
+        # Submit all answers
+        correct_count = 0
+        total_questions = 0
+        answer_details = []
+        correct_answers = {}
+        
+        for question_id, answer in answers.items():
+            try:
+                question = Question.objects.get(id=question_id, section=reading_section)
+                total_questions += 1
+                
+                # Create or update answer
+                user_answer, created = UserAnswer.objects.update_or_create(
+                    test_session=test_session,
+                    question=question,
+                    defaults={'answer': str(answer)}
+                )
+                
+                if user_answer.is_correct:
+                    correct_count += 1
+                
+                answer_details.append({
+                    'question_id': str(question.id),
+                    'user_answer': str(answer),
+                    'correct': user_answer.is_correct,
+                    'correct_answer': question.correct_answer
+                })
+                correct_answers[str(question.id)] = question.correct_answer
+                
+            except Question.DoesNotExist:
+                continue
+        
+        # Finish the session and calculate score
+        from exam.scoring.reading_scoring import update_reading_score
+        update_reading_score(test_session)
+        test_session.refresh_from_db()
+        
+        return JsonResponse({
+            'score': correct_count,
+            'total': total_questions,
+            'answers': answer_details,
+            'correct_answers': correct_answers
+        })
+    
+    except TestSession.DoesNotExist:
+        return JsonResponse({'error': 'Session not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def end_session_legacy(request):
+    """
+    POST /api/end-session/
+    Legacy endpoint: End a session
+    Body: {
+        "session_id": "uuid"
+    }
+    """
+    try:
+        data = json.loads(request.body)
+        session_id = data.get('session_id')
+        
+        if not session_id:
+            return JsonResponse({'error': 'session_id is required'}, status=400)
+        
+        test_session = TestSession.objects.get(session_id=session_id)
+        test_session.status = 'COMPLETED'
+        test_session.completed_at = timezone.now()
+        test_session.save()
+        
+        return JsonResponse({'success': True, 'message': 'Session ended'})
+    
+    except TestSession.DoesNotExist:
+        return JsonResponse({'error': 'Session not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
